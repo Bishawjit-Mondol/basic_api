@@ -26,3 +26,4 @@ Route::get('/users/{user}', [UserController::class, 'show']); // show specific u
 Route::post('/users', [UserController::class, 'store']); // store data
 Route::put('/users/{user}', [UserController::class, 'update']); // upate data
 Route::delete('/users/{user}', [UserController::class, 'destroy']); // delete data
+Route::post('/upload', [UserController::class, 'upload']); // store image

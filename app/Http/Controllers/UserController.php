@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -116,6 +117,38 @@ class UserController extends Controller
 
         return response()->json([
             'msg' => 'Info Deleted',
+            'status' => true
+        ], 200);
+    }
+
+
+    public function upload(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|mimes:png,jpg,jpeg,gif'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'msg' => 'Fix the errors',
+                'errors' => $validator->errors()
+            ], 200);
+        }
+
+        $img = $request->image;
+        $ext = $img->getClientOriginalExtension();
+        $img_name = time() . '.' . $ext;
+        $img->move(public_path() . '/upload/' , $img_name);
+
+        $image = new Image;
+        $image->image = $img_name;
+        $image->save();
+
+        return response()->json([
+            'msg' => 'Image uploaded',
+            'data' => $image,
+            'path' => asset('/upload/'.$img_name),
             'status' => true
         ], 200);
     }
